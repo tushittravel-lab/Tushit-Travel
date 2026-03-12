@@ -3,6 +3,12 @@ import { createServer as createViteServer } from "vite";
 //import Database from "better-sqlite3";//
 import path from "path";
 import { fileURLToPath } from "url";
+import mongoose from 'mongoose';
+const MONGODB_URI = process.env.MONGODB_URI || "";
+
+mongoose.connect(MONGODB_URI)
+  .then(() => console.log('✅ MongoDB Connected Successfully'))
+  .catch((err) => console.error('❌ MongoDB Connection Error:', err));
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -36,6 +42,23 @@ const __dirname = path.dirname(__filename);
     //features TEXT,
     //driver_details TEXT
   //);
+
+// --- यहाँ से पेस्ट करें ---
+const bookingSchema = new mongoose.Schema({
+  customerName: String,
+  customerPhone: String,
+  pickup: String,
+  drop: String,
+  date: String,
+  time: String,
+  passengers: Number,
+  vehicle: String,
+  instructions: String,
+  createdAt: { type: Date, default: Date.now }
+});
+
+const Booking = mongoose.model('Booking', bookingSchema);
+// --- यहाँ तक ---
 
   //CREATE TABLE IF NOT EXISTS bookings (
     //id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -147,39 +170,53 @@ async function startServer() {
 
   // API Routes
   app.get("/api/fleet", (req, res) => {
-    console.log(`[API] GET /api/fleet from ${req.ip}`);
-    try {
-      const fleet = db.prepare(`
-        SELECT f.*, 
-               AVG(r.rating) as avg_rating, 
-               COUNT(r.id) as review_count
-        FROM fleet f
-        LEFT JOIN ratings r ON f.id = r.car_id
-        GROUP BY f.id
-      `).all();
-      res.json(fleet);
-    } catch (error) {
-      console.error("[API] Error fetching fleet:", error);
-      res.status(500).json({ error: "Internal Server Error", details: error instanceof Error ? error.message : String(error) });
-    }
-  });
+  // यहाँ हम गाड़ियों का डेटा सीधा भेज रहे हैं ताकि वेबसाइट चलती रहे
+  const fleet = [
+    { id: 1, name: "Swift Dzire", category: "Sedan", price_per_km: 12, image_url: "/cars/dzire.jpg" },
+    { id: 2, name: "Innova Crysta", category: "SUV", price_per_km: 18, image_url: "/cars/innova.jpg" }
+    // आप अपनी गाड़ियों के नाम यहाँ जोड़ सकते हैं
+  ];
+  res.json(fleet);
+});
 
-  app.get("/api/availability", (req, res) => {
-    console.log(`[API] GET /api/availability from ${req.ip}`);
-    try {
-      const total = db.prepare("SELECT COUNT(*) as count FROM fleet").get() as { count: number };
-      const available = db.prepare("SELECT COUNT(*) as count FROM fleet WHERE status = 'available'").get() as { count: number };
-      const onTrip = db.prepare("SELECT COUNT(*) as count FROM fleet WHERE status = 'on-trip'").get() as { count: number };
-      res.json({
-        total: total.count,
-        available: available.count,
-        onTrip: onTrip.count
-      });
-    } catch (error) {
-      console.error("[API] Error fetching availability:", error);
-      res.status(500).json({ error: "Internal Server Error", details: error instanceof Error ? error.message : String(error) });
-    }
-  });
+  app.post("/api/bookings", async (req, res) => {
+  try {
+    // 1. ग्राहक ने जो भी फॉर्म में भरा है, उसे इकट्ठा करना
+    const { 
+      customerName, customerPhone, pickup, drop, 
+      date, time, passengers, vehicle, instructions 
+    } = req.body;
+
+    // 2. डेटाबेस (MongoDB) में एक-एक जानकारी को सही खांचे में डालना
+    const newBooking = new Booking({
+      customerName,
+      customerPhone,
+      pickup,
+      drop,
+      date,
+      time,
+      passengers,
+      vehicle,
+      instructions
+    });
+
+    // 3. डेटा को सेव करना (यहीं से Admin Panel को डेटा मिलेगा)
+    await newBooking.save();
+
+    console.log("✅ Booking Saved to MongoDB for Admin Panel:", newBooking);
+
+    // 4. सफलता का जवाब भेजना ताकि WhatsApp खुल सके
+    res.status(201).json({ 
+      success: true, 
+      message: "Data saved successfully",
+      data: newBooking 
+    });
+
+  } catch (error) {
+    console.error("❌ Database Error:", error);
+    res.status(500).json({ success: false, error: "Server error" });
+  }
+});
 
   app.post("/api/bookings", (req, res) => {
     console.log("[API] POST /api/bookings", req.body);
