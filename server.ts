@@ -1,41 +1,41 @@
 import express from "express";
 import { createServer as createViteServer } from "vite";
-import Database from "better-sqlite3";
+//import Database from "better-sqlite3";//
 import path from "path";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const db = new Database("tushit_travel.db");
+//const db = new Database("tushit_travel.db");
 
 // Initialize database
-db.exec(`
-  CREATE TABLE IF NOT EXISTS fleet (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    car_number TEXT,
-    category TEXT NOT NULL,
-    capacity INTEGER NOT NULL,
-    luggage INTEGER NOT NULL,
-    price_per_km REAL NOT NULL,
-    image_url TEXT NOT NULL,
-    status TEXT DEFAULT 'available',
-    image_front TEXT,
-    image_side TEXT,
-    image_interior TEXT,
-    image_seats TEXT,
-    image_boot TEXT,
-    has_ac INTEGER DEFAULT 1,
-    fuel_type TEXT DEFAULT 'Diesel',
-    transmission TEXT DEFAULT 'Manual',
-    driver_included INTEGER DEFAULT 1,
-    price_per_day REAL DEFAULT 0,
-    price_per_hour REAL DEFAULT 0,
-    best_use TEXT,
-    features TEXT,
-    driver_details TEXT
-  );
+//db.exec(`
+ // CREATE TABLE IF NOT EXISTS fleet (
+   // id INTEGER PRIMARY KEY AUTOINCREMENT,
+    //name TEXT NOT NULL,
+    //car_number TEXT,
+    //category TEXT NOT NULL,
+    //capacity INTEGER NOT NULL,
+    //luggage INTEGER NOT NULL,
+    //price_per_km REAL NOT NULL,
+    //image_url TEXT NOT NULL,
+    //status TEXT DEFAULT 'available',
+    //image_front TEXT,
+    //image_side TEXT,
+    //image_interior TEXT,
+    //image_seats TEXT,
+    //image_boot TEXT,
+    //has_ac INTEGER DEFAULT 1,
+    //fuel_type TEXT DEFAULT 'Diesel',
+    //transmission TEXT DEFAULT 'Manual',
+    //driver_included INTEGER DEFAULT 1,
+    //price_per_day REAL DEFAULT 0,
+    //price_per_hour REAL DEFAULT 0,
+    //best_use TEXT,
+    //features TEXT,
+    //driver_details TEXT
+  //);
 
   CREATE TABLE IF NOT EXISTS bookings (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
