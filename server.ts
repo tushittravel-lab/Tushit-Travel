@@ -37,22 +37,22 @@ const __dirname = path.dirname(__filename);
     //driver_details TEXT
   //);
 
-  CREATE TABLE IF NOT EXISTS bookings (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    trip_type TEXT NOT NULL,
-    pickup_location TEXT NOT NULL,
-    drop_location TEXT,
-    pickup_date TEXT NOT NULL,
-    pickup_time TEXT NOT NULL,
-    passengers INTEGER NOT NULL,
-    car_id INTEGER,
-    customer_name TEXT,
-    customer_email TEXT,
-    customer_phone TEXT,
-    status TEXT DEFAULT 'pending',
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY(car_id) REFERENCES fleet(id)
-  );
+  //CREATE TABLE IF NOT EXISTS bookings (
+    //id INTEGER PRIMARY KEY AUTOINCREMENT,
+    //trip_type TEXT NOT NULL,
+    //pickup_location TEXT NOT NULL,
+    //drop_location TEXT,
+    //pickup_date TEXT NOT NULL,
+    //pickup_time TEXT NOT NULL,
+    //passengers INTEGER NOT NULL,
+    //car_id INTEGER,
+    //customer_name TEXT,
+    //customer_email TEXT,
+    //customer_phone TEXT,
+    //status TEXT DEFAULT 'pending',
+    //created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    //FOREIGN KEY(car_id) REFERENCES fleet(id)
+  //);
 
   CREATE TABLE IF NOT EXISTS customers (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
